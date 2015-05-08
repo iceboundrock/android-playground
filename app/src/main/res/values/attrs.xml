@@ -1,0 +1,35 @@
+<resources>
+
+    <attr name="cropImageStyle" format="reference"/>
+
+    <declare-styleable name="CropImageView">
+        <attr name="highlightColor" format="reference|color"/>
+        <attr name="showThirds" format="boolean"/>
+        <attr name="showHandles">
+            <enum name="changing" value="0"/>
+            <enum name="always" value="1"/>
+            <enum name="never" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="TitleBar">
+        <attr name="leftText" format="reference|string"/>
+        <attr name="leftDrawable" format="reference"/>
+        <attr name="rightText" format="reference|string"/>
+        <attr name="rightDrawable" format="reference"/>
+        <attr name="titleText" format="reference|string"/>
+    </declare-styleable>
+    <declare-styleable name="ProgressCircular">
+        <attr name="circularColor" format="color"/>
+        <attr name="circularProgressColor" format="color"/>
+        <attr name="circularWidth" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="max" format="integer" />
+        <attr name="textIsDisplayable" format="boolean" />
+        <attr name="style">
+            <enum name="STROKE" value="0" />
+            <enum name="FILL" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

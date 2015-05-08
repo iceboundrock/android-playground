@@ -1,0 +1,25 @@
+{
+  "clientId": null,
+  "version": 1,
+  "mediaAppId": 10034,
+  "whiteboardAppId" : 10051,
+  "whiteboardAppName" : "100_ask",
+  "multicastServiceAppId": 50031,
+
+  "servers": [
+    {
+      "category": "Web",
+      "protocol": "http",
+      "fqdn": "61.145.54.10",
+      "port": 3000,
+      "ipAddresses": ["61.145.54.10"]
+    },
+    {
+      "category": "Notification",
+      "protocol": "http",
+      "fqdn": "61.145.54.10",
+      "port": 3000,
+      "ipAddresses": ["61.145.54.10"]
+    }
+  ]
+}
