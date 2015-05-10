@@ -5,49 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <li.ruoshi.playground.view.PathView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-    </li.ruoshi.playground.view.PathView>
-
-    <LinearLayout
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
-    <li.ruoshi.playground.view.AnimatedButton
-        android:layout_centerInParent="true"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:buttonSrc="@drawable/cam_button_student"
-        app:haloColor="@color/result_points"
-        app:buttonDownAnimation="@anim/button_down"
-        app:buttonUpAnimation="@anim/button_up"
-        android:id="@+id/animated_button"
-        />
+        android:id="@+id/activities_list"></ListView>
 
-    <Button
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:text="Test"
-        android:layout_centerHorizontal="true"
 
-        android:id="@+id/test_button"
-        android:layout_below="@id/animated_button"
-        />
 
-    <li.ruoshi.playground.view.DotProgressBar
-        android:id="@+id/dot_progress_bar"
-        android:layout_width="100dp"
-        android:layout_height="32dp"
-        android:layout_margin="20dp"
-        app:dotColor="#0091ea"
-        app:dotRadius="3dp"
-        app:maxDotCount="5"
-        app:innerBackground="@drawable/answer_btn_bg"
-        app:changeDotInterval="30"
-        />
-    </LinearLayout>
 </RelativeLayout>

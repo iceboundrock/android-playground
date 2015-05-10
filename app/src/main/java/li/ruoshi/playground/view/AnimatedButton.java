@@ -40,6 +40,7 @@ public class AnimatedButton extends RelativeLayout {
         if(this.buttonSrcResId == src){
             return;
         }
+
         this.buttonSrcResId = src;
         final Drawable buttonDrawable = getResources().getDrawable(buttonSrcResId);
         if (buttonDrawable != null) {

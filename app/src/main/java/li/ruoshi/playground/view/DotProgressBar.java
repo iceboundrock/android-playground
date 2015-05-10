@@ -64,6 +64,7 @@ public class DotProgressBar extends View {
 
         paint.setColor(dotColor);
         paint.setStyle(Paint.Style.FILL);
+        paint.setAntiAlias(true);
 
         changeDotCount();
     }

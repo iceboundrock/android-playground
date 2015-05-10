@@ -19,7 +19,22 @@
         <activity
             android:name=".ViewPagerDemo"
             android:label="@string/title_activity_view_pager_demo" >
-
+        </activity>
+        <activity
+            android:name=".PathViewActivity"
+            android:label="@string/title_activity_path_view" >
+        </activity>
+        <activity
+            android:name=".AnimatedButtonActivity"
+            android:label="@string/title_activity_animated_button" >
+        </activity>
+        <activity
+            android:name=".DotProgressBarActivity"
+            android:label="@string/title_activity_dot_progress_bar" >
+        </activity>
+        <activity
+            android:name=".RxDemoActivity"
+            android:label="@string/title_activity_rx_demo" >
         </activity>
     </application>
 
