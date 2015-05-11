@@ -30,9 +30,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ActivitiesAdapter adapter = new ActivitiesAdapter(this,
-                R.layout.activity_item,
-                R.id.lanuch_activity_button);
+        final ActivitiesAdapter adapter = new ActivitiesAdapter(this
+        );
 
         ListView lv = (ListView)findViewById(R.id.activities_list);
         lv.setAdapter(adapter);

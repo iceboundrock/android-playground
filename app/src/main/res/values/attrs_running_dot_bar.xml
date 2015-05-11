@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DotProgressBar">
+    <declare-styleable name="RunningDotsBar">
         <attr name="dotColor" format="color"/>
         <attr name="innerBackground" format="reference"/>
         <attr name="dotRadius" format="dimension" />
         <attr name="maxDotCount" format="integer" />
-        <attr name="changeDotInterval" format="integer" />
+        <attr name="updateInterval" format="integer" />
     </declare-styleable>
 </resources>

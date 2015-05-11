@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
     <Button
         android:id="@+id/lanuch_activity_button"
+        android:textAllCaps="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

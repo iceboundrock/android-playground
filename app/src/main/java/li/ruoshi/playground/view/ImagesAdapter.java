@@ -58,9 +58,10 @@ public class ImagesAdapter extends PagerAdapter {
             iv = cachedImgView.get();
         }
         if (iv == null) {
-            Log.d(TAG, "instantiateItem, use cached view, pos: " + position);
-
+            Log.d(TAG, "instantiateItem, no cached view, pos: " + position);
             iv = new ImageView(context);
+        } else {
+            Log.d(TAG, "instantiateItem, use cached view, pos: " + position);
         }
         iv.setImageResource(GalImages[position]);
         container.addView(iv, 0);
@@ -71,6 +72,6 @@ public class ImagesAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         Log.d(TAG, "destroyItem, pos: " + position);
         container.removeView((View) object);
-        unusedViews.offer(new WeakReference<>((ImageView)object));
+        unusedViews.offer(new WeakReference<>((ImageView) object));
     }
 }

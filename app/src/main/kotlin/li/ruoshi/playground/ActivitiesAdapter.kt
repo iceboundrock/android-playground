@@ -17,8 +17,8 @@ import li.ruoshi.playground.R
 /**
  * Created by ruoshili on 5/9/15.
  */
-public class ActivitiesAdapter(context: Context, itemResId: Int, textResId: Int)
-: ArrayAdapter<ActivityInfo>(context, itemResId, textResId) {
+public class ActivitiesAdapter(context: Context)
+: ArrayAdapter<ActivityInfo>(context, R.layout.activity_item, R.id.lanuch_activity_button) {
 
     val TAG = javaClass<ActivitiesAdapter>().getSimpleName()
     val PackageName = "li.ruoshi.playground"

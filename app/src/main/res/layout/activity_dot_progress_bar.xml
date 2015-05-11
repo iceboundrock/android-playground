@@ -9,7 +9,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="li.ruoshi.playground.DotProgressBarActivity">
 
-    <li.ruoshi.playground.view.DotProgressBar
+    <li.ruoshi.playground.view.RunningDotsBar
         android:id="@+id/dot_progress_bar"
         android:layout_width="100dp"
         android:layout_height="32dp"
@@ -18,6 +18,7 @@
         app:dotRadius="3dp"
         app:maxDotCount="5"
         app:innerBackground="@drawable/answer_btn_bg"
-        app:changeDotInterval="30"
+        app:updateInterval="500"
+
         />
 </RelativeLayout>

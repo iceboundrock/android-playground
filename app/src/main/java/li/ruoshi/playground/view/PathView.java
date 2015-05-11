@@ -44,11 +44,10 @@ public class PathView extends View {
     private static final int PointCounts = 30;
 
     private void init() {
-
         Log.d(TAG, "init");
 
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
+        final Resources r = getResources();
+        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
 
         paint.setColor(Color.BLUE);
         paint.setStrokeWidth(px);
@@ -103,23 +102,20 @@ public class PathView extends View {
         }
         PointF prevViewPoint = pathData.get(step);
         PointF currViewPoint = pathData.get(++step);
-
+        PointF prevPrevViewPoint = step < 2 ? beginPoint : pathData.get(step - 2);
+        PointF nextViewPoint = step < pathData.size() - 2 ? pathData.get(step + 1) : pathData.get(pathData.size() - 1);
         Log.d(TAG, "onDraw, Step: " + step + "next point: " + currViewPoint);
 
-
         path.quadTo(prevViewPoint.x, prevViewPoint.y, (currViewPoint.x + prevViewPoint.x) / 2, (currViewPoint.y + prevViewPoint.y) / 2);
-        //path.moveTo(currViewPoint.x, currViewPoint.y);
 
         canvas.drawPath(path, paint);
         super.onDraw(canvas);
         if (step < PointCounts - 1) {
-
             postInvalidateDelayed(1000 / FramePerSecond,
-                    (int)beginPoint.x,
-                    (int)beginPoint.y,
-                    (int)currViewPoint.x,
-                    (int)currViewPoint.y);
-            //postInvalidateDelayed(1000 / FramePerSecond);
+                    (int) prevPrevViewPoint.x,
+                    (int) prevPrevViewPoint.y,
+                    (int) nextViewPoint.x,
+                    (int) nextViewPoint.y);
         }
 
     }
