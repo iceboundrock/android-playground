@@ -36,6 +36,11 @@
             android:name=".RxDemoActivity"
             android:label="@string/title_activity_rx_demo" >
         </activity>
+
+        <activity
+            android:name=".AnkoActivity"
+            android:label="@string/title_activity_anko_demo" >
+        </activity>
     </application>
 
 </manifest>

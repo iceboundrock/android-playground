@@ -256,5 +256,6 @@
     <string name="title_activity_animated_button">Animated Button Demo</string>
     <string name="title_activity_dot_progress_bar">DotProgressBar Demo</string>
     <string name="title_activity_rx_demo">Rx Demo</string>
+    <string name="title_activity_anko_demo">Anko Demo</string>
 
 </resources>
