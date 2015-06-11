@@ -1,5 +1,6 @@
 package li.ruoshi.playground
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -17,12 +18,12 @@ import li.ruoshi.playground.R
 /**
  * Created by ruoshili on 5/9/15.
  */
-public class ActivitiesAdapter(context: Context)
+public class ActivitiesAdapter(context: Activity)
 : ArrayAdapter<ActivityInfo>(context, R.layout.activity_item, R.id.lanuch_activity_button) {
 
     val TAG = javaClass<ActivitiesAdapter>().getSimpleName()
     val PackageName = "li.ruoshi.playground"
-
+    val activity = context
     init {
         val pkgMgr = context.getPackageManager()
         val pkgInfo = pkgMgr.getPackageInfo(PackageName, PackageManager.GET_ACTIVITIES)
@@ -46,8 +47,9 @@ public class ActivitiesAdapter(context: Context)
         btn.setText(btnText)
         val cls = Class.forName (ai.name)
         btn.setOnClickListener { v ->
-            val intent = Intent(getContext(), cls);
-            getContext().startActivity(intent)
+            val intent = Intent(activity, cls);
+            activity.startActivity(intent)
+
         }
         return ret
     }

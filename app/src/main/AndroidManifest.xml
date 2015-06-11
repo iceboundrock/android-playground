@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="li.ruoshi.playground" >
 
+    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +11,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,12 +37,17 @@
         </activity>
         <activity
             android:name=".RxDemoActivity"
-            android:label="@string/title_activity_rx_demo" >
+            android:label="@string/title_activity_rx_demo"
+            android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".AnkoActivity"
             android:label="@string/title_activity_anko_demo" >
+        </activity>
+        <activity
+            android:name=".AnimatedFinishActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_animated_finish" >
         </activity>
     </application>
 
