@@ -48,9 +48,9 @@ public class RxUploadDemo {
     }
 
     final Handler handler = new Handler();
+
     public RxUploadDemo() {
     }
-
 
 
     public Observable<UploadTask> postUploadTask(final String path) {
@@ -60,7 +60,7 @@ public class RxUploadDemo {
                 subscriber.onNext(new UploadTask(path));
                 subscriber.onCompleted();
             }
-        }) .flatMap(new Func1<UploadTask, Observable<UploadTask>>() {
+        }).flatMap(new Func1<UploadTask, Observable<UploadTask>>() {
             @Override
             public Observable<UploadTask> call(UploadTask uploadTask) {
                 return getBS2KeyAsync(uploadTask);

@@ -53,7 +53,7 @@ public class RxDemoActivity extends Activity {
                                 new Action1<Throwable>() {
                                     @Override
                                     public void call(Throwable throwable) {
-                                        Log.d(TAG, "upload succeed, key: " + key, throwable);
+                                        Log.d(TAG, "upload failed, key: " + key, throwable);
                                     }
                                 },
                                 new Action0() {
@@ -64,6 +64,7 @@ public class RxDemoActivity extends Activity {
                                         if (subscription != null) {
                                             Log.d(TAG, "un-subscribe for key: " + key);
                                             subscription.unsubscribe();
+                                            subscriptionArray.remove(key);
                                         }
                                     }
                                 });
