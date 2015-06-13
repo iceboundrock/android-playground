@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,21 +14,21 @@ import android.widget.Button;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import li.ruoshi.playground.models.RxUploadDemo;
 import li.ruoshi.playground.view.AnimatedButton;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 
 public class RxDemoActivity extends Activity {
     private static final String TAG = RxDemoActivity.class.getSimpleName();
 
-    final PublishSubject<Integer> onClickObservable = PublishSubject.create();
-
-    AnimatedButton animatedButton;
-
+    RxUploadDemo rxUploadDemo = new RxUploadDemo();
     private int count = 0;
+
+    final SparseArray<Subscription> subscriptionArray = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,39 +36,41 @@ public class RxDemoActivity extends Activity {
         setContentView(R.layout.activity_rx_demo);
         Button button = (Button) findViewById(R.id.test_button);
 
-        final Subscription subscription =  new Timer().schedule(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "On timer in non-UI Threads");
-            }
-        }, 1, TimeUnit.SECONDS);
-
-        onClickObservable.buffer(2, TimeUnit.SECONDS).subscribe(new Action1<List<Integer>>() {
-            @Override
-            public void call(List<Integer> integers) {
-                if (integers == null || integers.size() < 1) {
-                    return;
-                }
-                Log.d(TAG, "last count in 2 seconds: " + integers.get(integers.size() - 1));
-            }
-        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subscription.unsubscribe();
+                final int key = count++;
+                Log.d(TAG, "onClick, count: " + key);
 
-                Log.d(TAG, "onClick, count: " + (++count));
-                onClickObservable.onNext(count);
+                final Subscription s = rxUploadDemo.postUploadTask(String.valueOf(key))
+                        .subscribe(new Action1<RxUploadDemo.UploadTask>() {
+                                       @Override
+                                       public void call(RxUploadDemo.UploadTask uploadTask) {
+                                           Log.d(TAG, "upload succeed, key: " + key + ", task: " + uploadTask);
+                                       }
+                                   },
+                                new Action1<Throwable>() {
+                                    @Override
+                                    public void call(Throwable throwable) {
+                                        Log.d(TAG, "upload succeed, key: " + key, throwable);
+                                    }
+                                },
+                                new Action0() {
+                                    @Override
+                                    public void call() {
+                                        Log.d(TAG, "onCompleted for key: " + key);
+                                        Subscription subscription = subscriptionArray.get(key);
+                                        if (subscription != null) {
+                                            Log.d(TAG, "un-subscribe for key: " + key);
+                                            subscription.unsubscribe();
+                                        }
+                                    }
+                                });
+
+                subscriptionArray.put(key, s);
             }
         });
-
-        new Timer(new Handler()).schedule(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "On timer in UI Threads");
-            }
-        }, 1, TimeUnit.SECONDS);
 
 
     }
@@ -88,7 +91,7 @@ public class RxDemoActivity extends Activity {
             return rx.Observable.timer(0, interval, timeUnit).subscribe(new Action1<Long>() {
                 @Override
                 public void call(Long aLong) {
-                    if(handler != null) {
+                    if (handler != null) {
                         handler.post(runnable);
                     } else {
                         runnable.run();

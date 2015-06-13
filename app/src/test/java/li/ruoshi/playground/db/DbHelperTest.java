@@ -14,7 +14,7 @@ import li.ruoshi.playground.BuildConfig;
  * Created by ruoshili on 6/11/15.
  */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 18)
+@Config(constants = BuildConfig.class, sdk = 18)
 public class DbHelperTest {
 
 
