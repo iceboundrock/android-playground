@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -23,11 +24,8 @@ public class RxUploadDemo {
 
     // 模拟乱序
     private static final Random random = new Random();
-    private final Scheduler handlerScheduler;
     final Scheduler uploadScheduler;
     final SingleThreadExecutor threadExecutor;
-    final HandlerThreadExecutor handlerThreadExecutor;
-    final Handler handler;
 
     public static class UploadTask {
         public final String path;
@@ -59,22 +57,6 @@ public class RxUploadDemo {
     }
 
 
-
-    private static class HandlerThreadExecutor implements Executor {
-        final Handler handler;
-
-        public HandlerThreadExecutor(final Handler handler) {
-            this.handler = handler;
-        }
-
-        @Override
-        public void execute(Runnable command) {
-            if (command != null) {
-                handler.post(command);
-            }
-        }
-    }
-
     private static class SingleThreadExecutor implements Executor {
 
         private final AtomicBoolean stopped = new AtomicBoolean(false);
@@ -85,6 +67,8 @@ public class RxUploadDemo {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "Enter run()");
+
                     while (!stopped.get()) {
                         try {
                             final Runnable runnable = commandQueue.poll(1, TimeUnit.SECONDS);
@@ -96,6 +80,8 @@ public class RxUploadDemo {
                             Log.w(TAG, "execute command failed.", e);
                         }
                     }
+
+                    Log.d(TAG, "Exit run()");
                 }
             });
 
@@ -116,11 +102,8 @@ public class RxUploadDemo {
     }
 
     public RxUploadDemo() {
-        handler = new Handler();
         threadExecutor = new SingleThreadExecutor();
         uploadScheduler = Schedulers.from(threadExecutor);
-        handlerThreadExecutor = new HandlerThreadExecutor(handler);
-        handlerScheduler = Schedulers.from(handlerThreadExecutor);
     }
 
     public void stop() {
@@ -146,7 +129,7 @@ public class RxUploadDemo {
             public Observable<UploadTask> call(UploadTask uploadTask) {
                 return upload(uploadTask);
             }
-        }).observeOn(handlerScheduler); // 在UI线程回调
+        }).observeOn(AndroidSchedulers.mainThread()); // 在UI线程回调
     }
 
     private Observable<UploadTask> getBS2Key(final UploadTask task) {
