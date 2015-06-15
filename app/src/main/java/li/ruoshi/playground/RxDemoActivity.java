@@ -25,7 +25,7 @@ import rx.subjects.PublishSubject;
 public class RxDemoActivity extends Activity {
     private static final String TAG = RxDemoActivity.class.getSimpleName();
 
-    RxUploadDemo rxUploadDemo = new RxUploadDemo();
+    final RxUploadDemo rxUploadDemo = new RxUploadDemo();
     private int count = 0;
 
     final SparseArray<Subscription> subscriptionArray = new SparseArray<>();
@@ -76,6 +76,12 @@ public class RxDemoActivity extends Activity {
 
     }
 
+
+    @Override
+    public void finish() {
+        super.finish();
+        rxUploadDemo.stop();
+    }
 
     public static class Timer {
         private final Handler handler;
