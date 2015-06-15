@@ -8,6 +8,7 @@ import java.util.Random;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ruoshili on 6/13/15.
@@ -47,11 +48,8 @@ public class RxUploadDemo {
         }
     }
 
-    final Handler handler = new Handler();
-
     public RxUploadDemo() {
     }
-
 
     public Observable<UploadTask> postUploadTask(final String path) {
         return Observable.create(new Observable.OnSubscribe<UploadTask>() {
@@ -70,22 +68,25 @@ public class RxUploadDemo {
             public Observable<UploadTask> call(UploadTask uploadTask) {
                 return uploadAsync(uploadTask);
             }
-        });
+        }).subscribeOn(Schedulers.io());
     }
 
     private Observable<UploadTask> getBS2KeyAsync(final UploadTask task) {
         return Observable.create(new Observable.OnSubscribe<UploadTask>() {
             @Override
             public void call(final Subscriber<? super UploadTask> subscriber) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        task.bs2Key = String.valueOf(System.currentTimeMillis());
-                        Log.d(TAG, "got BS2 key: " + task.getBs2Key());
-                        subscriber.onNext(task);
-                        subscriber.onCompleted();
-                    }
-                }, 500 + random.nextInt(1000)); // 模拟乱序
+
+                task.bs2Key = String.valueOf(System.currentTimeMillis());
+                Log.d(TAG, "got BS2 key: " + task.getBs2Key());
+
+                try {
+                    Thread.sleep(500 + random.nextInt(1000)); // 模拟乱序
+                } catch (InterruptedException e) {
+
+                } finally {
+                    subscriber.onNext(task);
+                    subscriber.onCompleted();
+                }
             }
         });
     }
@@ -94,16 +95,18 @@ public class RxUploadDemo {
         return Observable.create(new Observable.OnSubscribe<UploadTask>() {
             @Override
             public void call(final Subscriber<? super UploadTask> subscriber) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        task.url = "http://bs2.yy.com/" + System.currentTimeMillis();
-                        Log.d(TAG, "upload to: " + task.getUrl());
+                task.url = "http://bs2.yy.com/" + System.currentTimeMillis();
+                Log.d(TAG, "upload to: " + task.getUrl());
 
-                        subscriber.onNext(task);
-                        subscriber.onCompleted();
-                    }
-                }, 500 + random.nextInt(2000)); // 模拟乱序
+
+                try {
+                    Thread.sleep(500 + random.nextInt(1000)); // 模拟乱序
+                } catch (InterruptedException e) {
+
+                } finally {
+                    subscriber.onNext(task);
+                    subscriber.onCompleted();
+                }
             }
         });
     }
