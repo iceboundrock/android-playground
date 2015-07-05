@@ -1,5 +1,6 @@
 package li.ruoshi.playground.models;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
@@ -13,8 +14,10 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 /**
  * Created by ruoshili on 6/13/15.
@@ -112,7 +115,17 @@ public class RxUploadDemo {
         }
     }
 
+    PublishSubject<String> publishSubject = PublishSubject.create();
+
     public Observable<UploadTask> postUploadTask(final String path) {
+        publishSubject.subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+
+            }
+        });
+        publishSubject.onNext(path);
+
         return Observable.create(new Observable.OnSubscribe<UploadTask>() {
             @Override
             public void call(Subscriber<? super UploadTask> subscriber) {
@@ -136,18 +149,28 @@ public class RxUploadDemo {
         return Observable.create(new Observable.OnSubscribe<UploadTask>() {
             @Override
             public void call(final Subscriber<? super UploadTask> subscriber) {
+                Log.d(TAG, "begin getBS2Key");
 
-                task.bs2Key = String.valueOf(System.currentTimeMillis());
-                Log.d(TAG, "got BS2 key: " + task.getBs2Key());
+                final AsyncTask<Void, Void, Void> at = new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        task.bs2Key = String.valueOf(System.currentTimeMillis());
+                        Log.d(TAG, "got BS2 key: " + task.getBs2Key());
 
-                try {
-                    Thread.sleep(500 + random.nextInt(1000)); // 模拟随机的API调用时间
-                } catch (InterruptedException e) {
+                        try {
+                            Thread.sleep(500 + random.nextInt(1000)); // 模拟随机的API调用时间
+                        } catch (InterruptedException e) {
 
-                } finally {
-                    subscriber.onNext(task);
-                    subscriber.onCompleted();
-                }
+                        } finally {
+                            subscriber.onNext(task);
+                            subscriber.onCompleted();
+                        }
+
+                        return null;
+                    }
+                };
+
+                at.execute();
             }
         }).subscribeOn(uploadScheduler); // 在上传线程执行获取BS2 Key，如果换成其他Scheduler，可以在其他线程执行
     }
@@ -156,18 +179,27 @@ public class RxUploadDemo {
         return Observable.create(new Observable.OnSubscribe<UploadTask>() {
             @Override
             public void call(final Subscriber<? super UploadTask> subscriber) {
-                task.url = "http://bs2.yy.com/" + System.currentTimeMillis();
-                Log.d(TAG, "upload to: " + task.getUrl());
+                Log.d(TAG, "begin getBS2Key");
+
+                final AsyncTask<Void, Void, Void> at = new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        task.url = "http://bs2.yy.com/" + System.currentTimeMillis();
+                        Log.d(TAG, "upload to: " + task.getUrl());
 
 
-                try {
-                    Thread.sleep(500 + random.nextInt(1000)); // 模拟随机的上传时间
-                } catch (InterruptedException e) {
+                        try {
+                            Thread.sleep(500 + random.nextInt(1000)); // 模拟随机的上传时间
+                        } catch (InterruptedException e) {
 
-                } finally {
-                    subscriber.onNext(task);
-                    subscriber.onCompleted();
-                }
+                        } finally {
+                            subscriber.onNext(task);
+                            subscriber.onCompleted();
+                        }
+                        return null;
+                    }
+                };
+                at.execute();
             }
         }).subscribeOn(uploadScheduler);
     }

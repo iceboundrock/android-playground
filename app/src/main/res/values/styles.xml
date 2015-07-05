@@ -5,4 +5,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="EditTextCustomHolo" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/login_input_baseline</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
 </resources>

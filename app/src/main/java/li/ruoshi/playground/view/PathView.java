@@ -7,7 +7,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -53,6 +55,8 @@ public class PathView extends View {
         paint.setStrokeWidth(px);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
+
+
     }
 
 
@@ -95,6 +99,8 @@ public class PathView extends View {
 
     private int step;
 
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (step >= PointCounts) {
@@ -118,7 +124,11 @@ public class PathView extends View {
                     (int) nextViewPoint.y);
         }
 
+
+
     }
+
+
 
     public void redraw() {
         step = 0;

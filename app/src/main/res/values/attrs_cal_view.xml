@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CalView">
+        <!-- 是否显示列头 -->
+        <attr name="showHeader" format="boolean" />
+
+        <!-- 日历距离视图边框的距离 -->
+        <attr name="calMargin" format="dimension" />
+
+        <!-- 行数 -->
+        <attr name="rowCount" format="integer" />
+
+        <!-- 文字尺寸 -->
+        <attr name="dateTextSize" format="dimension" />
+
+        <!-- 文字颜色 -->
+        <attr name="dateTextColor" format="color" />
+
+        <!-- 列头文字尺寸 -->
+        <attr name="headerTextSize" format="dimension" />
+
+        <!-- 列头文字颜色 -->
+        <attr name="headerTextColor" format="color" />
+
+        <!-- 圆环的半径 -->
+        <attr name="cellRadius" format="dimension"/>
+
+        <!-- 今天的背景颜色 -->
+        <attr name="todayCellBgColor" format="color"/>
+
+        <!-- 当前选择单元的背景颜色 -->
+        <attr name="selectedCellBgColor" format="color"/>
+
+        <!-- 当前选择单元的文字颜色 -->
+        <attr name="selectedCellTextColor" format="color"/>
+
+        <!-- 之前选择单元的小圆点 颜色 -->
+        <attr name="prevSelectedCellColor" format="color"/>
+
+
+        <!-- 之前选择单元的小圆点 颜色 -->
+        <attr name="prevSelectedCellRadius" format="dimension"/>
+
+        <!-- 之前选择单元的小圆点在Y轴和文字的距离 -->
+        <attr name="prevSelectedCellOffsetY" format="dimension"/>
+
+        <!-- 距离今天的周数，用于下半部分的日历控件，当showHeader = false的适合才有效 -->
+        <attr name="weeksFromToday" format="integer" />
+
+        <!-- 行间距 -->
+        <attr name="rowSpace" format="dimension" />
+
+        <!-- 日期与列头之间的间隔 -->
+        <attr name="dateToHeaderSpace" format="dimension" />
+    </declare-styleable>
+
+</resources>

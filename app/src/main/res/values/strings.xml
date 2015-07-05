@@ -259,5 +259,8 @@
     <string name="title_activity_anko_demo">Anko Demo</string>
     <string name="title_activity_spen_demo">SPenDemo</string>
     <string name="title_activity_animated_finish">Animated Finish Demo</string>
+    <string name="title_activity_wave_progress">WaveProgressActivity</string>
+    <string name="title_activity_cal">CalActivity</string>
+    <string name="title_activity_cal_demo">CalDemoActivity</string>
 
 </resources>

@@ -74,4 +74,7 @@
     <color name="switch_off_thumb_color">#8b9499</color>
     <color name="whiteboard_screen_text_color">#78909c</color>
     <color name="conversion_time_text_color">#546e7a</color>
+
+    <color name="cal_bg_color">#ff8c0e</color>
+    <color name="cal_header_text_color">#ffcba6</color>
 </resources>

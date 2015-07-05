@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="li.ruoshi.playground.CalDemoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/header_container"
+        android:background="@color/cal_bg_color">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/icon_back"
+            android:id="@+id/back_button"
+            android:layout_marginLeft="22dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="16sp"
+            android:text="预约解答"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
+
+
+    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+        android:layout_below="@id/header_container"
+        android:id="@+id/split_line"
+        android:background="@android:color/white"
+        />
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        </LinearLayout>
+
+    </ScrollView>
+    <li.ruoshi.playground.view.CalView
+        android:layout_below="@id/split_line"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cal_bg_color"
+        app:cellRadius="13dp"
+        app:dateTextColor="@android:color/white"
+        app:dateTextSize="15sp"
+        app:selectedCellBgColor="@android:color/white"
+        app:headerTextColor="@color/cal_header_text_color"
+        app:prevSelectedCellRadius="2dp"
+        app:rowCount="2"
+        app:selectedCellTextColor="@color/cal_bg_color"
+        app:prevSelectedCellColor="@android:color/white"
+        app:showHeader="true"
+        app:textSize="16sp"
+        app:rowSpace="16dp"
+        app:dateToHeaderSpace="10dp"/>
+
+</RelativeLayout>
