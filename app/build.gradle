@@ -1,9 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '0.12.412'
-        anko_version = '0.6.2-19s'
+        kotlin_version = '1.0.+'
         joda_time_version = '2.8.1'
-
+        anko_version = '0.8.1'
     }
 
     repositories {
@@ -21,13 +20,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "li.ruoshi.playground"
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -54,12 +53,17 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.0'
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.+'
-    compile 'io.reactivex:rxjava:1.0.12'
-    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'com.android.support:appcompat-v7:23.+'
+    compile 'com.android.support:recyclerview-v7:23.+'
+    compile 'io.reactivex:rxjava:1.+'
+    compile 'io.reactivex:rxandroid:1.+'
     compile 'com.google.dagger:dagger:2.0.1'
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.+'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "org.jetbrains.anko:anko:$anko_version"
+    compile "org.jetbrains.anko:anko-sdk15:$anko_version" // sdk19, sdk21, sdk23 are also available
+    compile "org.jetbrains.anko:anko-support-v4:$anko_version" // In case you need support-v4 bindings
+    compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version" // For appcompat-v7 bindings
     testCompile 'junit:junit:4.12'
 
 
@@ -68,7 +72,7 @@ dependencies {
     compile "net.danlew:android.joda:$joda_time_version"
 
 
-    testCompile('org.robolectric:robolectric:3.0-rc3') {
+    testCompile('org.robolectric:robolectric:3.+') {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }}
