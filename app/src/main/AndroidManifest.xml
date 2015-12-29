@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="li.ruoshi.playground" >
 
-    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".PlaygroundApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".PlaygroundApp"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
@@ -61,6 +61,10 @@
         <activity
             android:name=".CalDemoActivity"
             android:label="@string/title_activity_cal_demo" >
+        </activity>
+        <activity
+            android:name=".FloatingFragmentActivity"
+            android:label="@string/title_activity_fragment" >
         </activity>
     </application>
 
