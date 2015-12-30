@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,28 +29,28 @@ import li.ruoshi.playground.R;
  * Created by ruoshili on 7/1/15.
  */
 public class CalView extends View {
+    static final String[] Headers = new String[]{"日", "一", "二", "三", "四", "五", "六"};
+    final static int kTouchState_None = 0;
+    final static int kTouchState_Started = 1;
+    final static int kTouchState_Moving = 2;
+    final static int kTouchState_Stopped = 3;
     private static final String TAG = CalView.class.getSimpleName();
-
+    private final List<CalCell> headerCells = new ArrayList<>(7);
+    private final List<DateCell> dateCells = new ArrayList<>(5 * 7); // 5 rows x 7 days
+    Rect textBound = new Rect();
+    TouchInfo touchDown;
+    TouchInfo touchUp;
     private Paint headerTextPaint;
     private Paint dateTextPaint;
-
     private Paint todayCyclePaint;
     private Paint selectedCyclePaint;
     private Paint prevSelectedPointPaint;
-
     private float calMargin, headerCellWidth, headerCellHeight, cellRadius;
     private float dateCellWidth, dateCellHeight;
-
-
-    private final List<CalCell> headerCells = new ArrayList<>(7);
-    private final List<CalCell> dateCells = new ArrayList<>(5 * 7); // 5 rows x 7 days
-
-    final float yOffset = 200f;
-
     private boolean showHeader;
-
     private float dateTextSize;
-    private int rowCount;
+    private int minRowCount;
+    private int maxRowCount;
     private int todayCellBgColor;
     private int selectedCellBgColor;
     private int prevSelectedCellColor;
@@ -58,73 +59,44 @@ public class CalView extends View {
     private int headerTextColor;
     private int prevSelectedCellRadius;
     private int dateTextColor;
-    private int weeksFromToday;
     private int rowSpace;
     private int selectedCellTextColor;
     private int dateToHeaderSpace;
+    private int offset;
+    private int rowCount;
+    private OnSelectedDateChangeListener onSelectedDateChangeListener;
+    private boolean cellsInitialized = false;
+    private DateCell selectedCell;
+    private DateCell prevSelectedCell;
 
+    public CalView(Context context) {
+        super(context);
+    }
 
-    private static class CalCell {
-        public final float x;
-        public final float y;
-        public final float r;
-        public final DateTime date;
+    public CalView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-        public final String title;
+    public CalView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initAttrs(context, attrs, defStyleAttr);
 
-        public final boolean disabled;
+        rowCount = minRowCount;
 
-        public CalCell(float x, float y, float r, String title) {
-            this(x, y, r, null, title);
-        }
+        initPaints();
+    }
 
-        public CalCell(float x, float y, float r, DateTime date) {
-            this(x, y, r, date, "");
-        }
+    static float getPixels(int unit, float size) {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        return TypedValue.applyDimension(unit, size, metrics);
+    }
 
-        private CalCell(float x, float y, float r, DateTime date, String title) {
-            this.x = x;
-            this.y = y;
-            this.r = r;
-            this.date = date;
-            this.title = title;
+    public OnSelectedDateChangeListener getOnSelectedDateChangeListener() {
+        return onSelectedDateChangeListener;
+    }
 
-            disabled = date == null || date.isBeforeNow();
-
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            CalCell calCell = (CalCell) o;
-
-            boolean sameDate = !(date != null ? !(date.getDayOfYear() == calCell.date.getDayOfYear())
-                    : calCell.date != null);
-            boolean sameTitle = !(title != null ? !title.equals(calCell.title) : calCell.title != null);
-
-            return (date != null && sameDate) || ((!TextUtils.isEmpty(title)) && sameTitle);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = date != null ? date.hashCode() : 0;
-            result = 31 * result + (title != null ? title.hashCode() : 0);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "CalCell{" +
-                    "date=" + date +
-                    ", x=" + x +
-                    ", y=" + y +
-                    ", r=" + r +
-                    ", title='" + title + '\'' +
-                    ", disabled=" + disabled +
-                    '}';
-        }
+    public void setOnSelectedDateChangeListener(OnSelectedDateChangeListener onSelectedDateChangeListener) {
+        this.onSelectedDateChangeListener = onSelectedDateChangeListener;
     }
 
     private void initAttrs(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -147,8 +119,11 @@ public class CalView extends View {
             dateTextSize = typedArray.getDimensionPixelSize(R.styleable.CalView_dateTextSize,
                     (int) getPixels(TypedValue.COMPLEX_UNIT_SP, 15));
 
-            rowCount = typedArray.getColor(
-                    R.styleable.CalView_rowCount, 1);
+            minRowCount = typedArray.getColor(
+                    R.styleable.CalView_minRowCount, 1);
+
+            maxRowCount = typedArray.getColor(
+                    R.styleable.CalView_minRowCount, 5);
 
             cellRadius = typedArray.getDimensionPixelSize(
                     R.styleable.CalView_cellRadius,
@@ -173,7 +148,6 @@ public class CalView extends View {
                     R.styleable.CalView_prevSelectedCellOffsetY,
                     (int) getPixels(TypedValue.COMPLEX_UNIT_DIP, 4));
 
-            weeksFromToday = typedArray.getInt(R.styleable.CalView_weeksFromToday, 0);
 
             rowSpace = typedArray.getDimensionPixelSize(R.styleable.CalView_rowSpace,
                     (int) getPixels(TypedValue.COMPLEX_UNIT_DIP, 7));
@@ -187,6 +161,7 @@ public class CalView extends View {
             dateToHeaderSpace = typedArray.getDimensionPixelSize(R.styleable.CalView_dateToHeaderSpace,
                     (int) getPixels(TypedValue.COMPLEX_UNIT_SP, 10));
 
+
         } finally {
             if (typedArray != null) {
                 typedArray.recycle();
@@ -194,27 +169,17 @@ public class CalView extends View {
         }
     }
 
-    public CalView(Context context) {
-        super(context);
+    public int getRowCount() {
+        return rowCount;
     }
 
-    public CalView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public void setRowCount(int rowCount) {
+        if (rowCount >= minRowCount && rowCount <= maxRowCount && this.rowCount != rowCount) {
+            this.rowCount = rowCount;
+            //postInvalidate();
+            Log.d(TAG, "setRowCount to: " + rowCount);
+        }
     }
-
-    public CalView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initAttrs(context, attrs, defStyleAttr);
-        initPaints();
-    }
-
-
-    static float getPixels(int unit, float size) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        return TypedValue.applyDimension(unit, size, metrics);
-    }
-
-    static final String[] Headers = new String[]{"日", "一", "二", "三", "四", "五", "六"};
 
     private void initPaints() {
 
@@ -246,11 +211,10 @@ public class CalView extends View {
 
         todayCyclePaint = new Paint();
         todayCyclePaint.setColor(selectedCellBgColor);
+        todayCyclePaint.setStrokeWidth(getPixels(TypedValue.COMPLEX_UNIT_DIP, 1));
         todayCyclePaint.setStyle(Paint.Style.STROKE);
         todayCyclePaint.setAntiAlias(true);
     }
-
-    private boolean cellsInitialized = false;
 
     private void initCalCells() {
         if (cellsInitialized) {
@@ -268,10 +232,8 @@ public class CalView extends View {
 
         for (int i = 0; i < Headers.length; i++) {
 
-            float x = calMargin + ((float) i + 0.5f) * headerCellWidth;
-            float y = yOffset + headerCellHeight / 2f;
 
-            CalCell cell = new CalCell(x, y, cellRadius, Headers[i]);
+            CalCell cell = new HeaderCell(i, Headers[i]);
 
             this.headerCells.add(cell);
         }
@@ -296,32 +258,62 @@ public class CalView extends View {
 
         final DateTime firstCellDate = getFirstCellDate();
 
-        final int cellCount = rowCount * 7;
-
-        final int offset = weeksFromToday * 7;
+        final int cellCount = maxRowCount * 7;
 
         for (int i = 0; i < cellCount; i++) {
 
-            float x = calMargin + ((float) (i % 7) + 0.5f) * dateCellWidth;
-            float y = yOffset + ((rowSpace + dateCellHeight) * (i / 7))
-                    + dateToHeaderSpace + dateCellHeight
-                    + dateCellHeight / 2f;
-
-            dateCells.add(new CalCell(x, y, cellRadius, firstCellDate.plusDays(i + offset)));
+            dateCells.add(new DateCell(i, firstCellDate.plusDays(i)));
         }
-
-
-        // 日 一 二 三 四 五 六
-        //  7 1  2 3  4  5 6
     }
 
+    public int getMinHeight() {
+        return (int) ((rowSpace + dateCellHeight) * (minRowCount - 1)
+                + dateToHeaderSpace
+                + headerCellHeight
+                + (3 * dateCellHeight / 2f)
+                + getPixels(TypedValue.COMPLEX_UNIT_DIP, 15));
+    }
+
+    public int getMaxHeight() {
+        return (int) ((rowSpace + dateCellHeight) * (maxRowCount - 1)
+                + dateToHeaderSpace + headerCellHeight
+                + (3 * dateCellHeight / 2f)
+                + getPixels(TypedValue.COMPLEX_UNIT_DIP, 15));
+    }
+
+    public int getMaxRowCount() {
+        return maxRowCount;
+    }
+
+    public int getMinRowCount() {
+        return minRowCount;
+    }
 
     private void drawDateCells(Canvas canvas) {
         Log.d(TAG, "date cells count: " + dateCells.size());
 
-        for (int i = 0; i < dateCells.size(); i++) {
 
-            final CalCell cell = dateCells.get(i);
+        if (rowCount < maxRowCount && selectedCell != null) {
+            // TODO: 找出最合适显示选中单元的位置
+            // 如果选中单元在最后一行，
+            final DateTime firstCellDate = dateCells.get(0).date;
+            Duration diff = new Duration(firstCellDate, selectedCell.date);
+
+            final int diffDays = (int) diff.getStandardDays();
+            offset = diffDays - (diffDays % 7);
+
+            if (offset + 7 * rowCount >= dateCells.size()) {
+                offset = dateCells.size() - 7 * rowCount;
+            }
+        } else {
+            offset = 0;
+        }
+
+        Log.d(TAG, "offset: " + offset);
+
+        for (int i = 0; i < (7 * rowCount); i++) {
+
+            final CalCell cell = dateCells.get(i + offset);
 
             if (cell == null) {
                 continue;
@@ -335,25 +327,35 @@ public class CalView extends View {
             }
 
             if (isSelected) {
-                canvas.drawCircle(selectedCell.x,
-                        selectedCell.y - (dateCellHeight / 2f),
+                canvas.drawCircle(selectedCell.getX(),
+                        selectedCell.getY() - (dateCellHeight / 2f),
                         cellRadius,
                         selectedCyclePaint);
-            } else if(cell.date.getDayOfYear() == DateTime.now().getDayOfYear()) {
-                canvas.drawCircle(cell.x,
-                        cell.y - (dateCellHeight / 2f),
+            } else if (cell.date.getDayOfYear() == DateTime.now().getDayOfYear()) {
+                canvas.drawCircle(cell.getX(),
+                        cell.getY() - (dateCellHeight / 2f),
                         cellRadius,
                         todayCyclePaint);
             }
 
 
-
-            dateTextPaint.setColor(isSelected ? selectedCellTextColor : dateTextColor);
+            dateTextPaint.setColor(isSelected ? selectedCellTextColor :
+                    (cell.disabled ? headerTextColor : dateTextColor));
 
             Log.d(TAG, "Draw text for " + cell.date + ", isSelected=" + isSelected);
-            canvas.drawText(String.format("%02d", cell.date.getDayOfMonth()),
-                    cell.x,
-                    cell.y,
+
+            String text;
+            if (cell.date.getDayOfMonth() == 1) {
+                text = cell.date.getMonthOfYear() + "月";
+                dateTextPaint.setTextSize(dateTextSize / 1.35f);
+            } else {
+                text = String.format("%02d", cell.date.getDayOfMonth());
+                dateTextPaint.setTextSize(dateTextSize);
+            }
+
+            canvas.drawText(text,
+                    cell.getX(),
+                    cell.getY(),
                     dateTextPaint);
         }
     }
@@ -372,21 +374,20 @@ public class CalView extends View {
             }
 
             canvas.drawText(cell.title,
-                    cell.x,
-                    cell.y,
+                    cell.getX(),
+                    cell.getY(),
                     headerTextPaint);
         }
     }
-
-    Rect textBound = new Rect();
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (!changed) {
+        if (!changed || this.cellsInitialized) {
             return;
         }
+
 
         headerTextPaint.getTextBounds(Headers[0], 0, 1, textBound);
 
@@ -412,23 +413,98 @@ public class CalView extends View {
 
 
         if (prevSelectedCell != null
-                && prevSelectedCell != selectedCell) {
-            canvas.drawCircle(prevSelectedCell.x,
-                    prevSelectedCell.y + prevSelectedCellOffsetY,
+                && prevSelectedCell != selectedCell
+                && (rowCount == getMaxRowCount() || prevSelectedCell.inSameRow(selectedCell))) {
+            canvas.drawCircle(prevSelectedCell.getX(),
+                    prevSelectedCell.getY() + prevSelectedCellOffsetY,
                     prevSelectedCellRadius,
                     prevSelectedPointPaint);
         }
 
     }
 
-    final static int kTouchState_None = 0;
-    final static int kTouchState_Started = 1;
-    final static int kTouchState_Moving = 2;
-    final static int kTouchState_Stopped = 3;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // 只处理单指操作
+        if (event.getPointerCount() != 1) {
+            return super.onTouchEvent(event);
+        }
 
-    TouchInfo touchDown;
+        final int action = event.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                touchDown = new TouchInfo(kTouchState_Started, event);
+                touchUp = null;
+                break;
+            case MotionEvent.ACTION_UP:
+                touchUp = new TouchInfo(kTouchState_Stopped, event);
+                final float d = touchUp.distanceTo(touchDown);
+                final float t = touchUp.eventTime - touchDown.eventTime;
 
-    TouchInfo touchUp;
+                // 按下和抬起的距离小于100像素，切按下时间小于200ms，认为是单击
+                if (d < 100 && t < 200) {
+                    Log.d(TAG, "single click");
+                    onSingleClick(touchDown);
+                } else if (Math.abs(touchDown.y - touchUp.y) < 100 && Math.abs((touchDown.x - touchUp.x)) > 100) {
+                    if (touchDown.x > touchUp.x) {
+                        onSwipeLeft();
+                    } else {
+                        onSwipeRight();
+                    }
+                }
+
+                touchDown = null;
+                touchUp = null;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                touchDown = null;
+                touchUp = null;
+                break;
+        }
+
+
+        return true;
+    }
+
+    private void onSwipeRight() {
+
+    }
+
+    private void onSwipeLeft() {
+
+    }
+
+    private void onSingleClick(final TouchInfo ti) {
+        for (int i = 0; i < dateCells.size(); i++) {
+
+            final DateCell cell = dateCells.get(i);
+
+            if (cell.disabled) {
+                continue;
+            }
+
+            final float d = ti.distanceTo(cell.getX(), cell.getY());
+
+            if (d < cellRadius) {
+                prevSelectedCell = selectedCell;
+                selectedCell = cell;
+
+                Log.d(TAG, "on clicked, redraw");
+
+                final OnSelectedDateChangeListener l = onSelectedDateChangeListener;
+                if (l != null) {
+                    l.onSelectedDateChange(cell.date.getYear(), cell.date.getMonthOfYear(), cell.date.getDayOfMonth());
+                }
+
+                postInvalidate();
+                break;
+            }
+        }
+    }
+
+    public interface OnSelectedDateChangeListener {
+        void onSelectedDateChange(int year, int month, int day);
+    }
 
     static class TouchInfo {
         public final int state;
@@ -455,59 +531,134 @@ public class CalView extends View {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        // 只处理单指操作
-        if (event.getPointerCount() != 1) {
-            return super.onTouchEvent(event);
+    private abstract class CalCell {
+        public final int index;
+
+        public final DateTime date;
+
+        public final String title;
+
+        public final boolean disabled;
+
+        public CalCell(int index, String title) {
+            this(index, null, title);
         }
 
-        final int action = event.getActionMasked();
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                touchDown = new TouchInfo(kTouchState_Started, event);
-                touchUp = null;
-                break;
-            case MotionEvent.ACTION_UP:
-                touchUp = new TouchInfo(kTouchState_Stopped, event);
-                final float d = touchUp.distanceTo(touchDown);
-                final float t = touchUp.eventTime - touchDown.eventTime;
-
-                if (d < 100 && t < 200) {
-                    Log.d(TAG, "single click");
-                    onSingleClick(touchDown);
-                }
-
-                touchDown = null;
-                touchUp = null;
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                touchDown = null;
-                touchUp = null;
-                break;
+        public CalCell(int index, DateTime date) {
+            this(index, date, "");
         }
 
+        private CalCell(int index, DateTime date, String title) {
+            this.index = index;
+            this.date = date;
+            this.title = title;
 
-        return true;
+            final DateTime now = DateTime.now();
+
+            disabled = date == null
+                    || date.getYear() < now.getYear()
+                    || date.getDayOfYear() < now.getDayOfYear();
+        }
+
+        protected abstract int getX(int offset);
+
+        protected abstract int getY(int offset);
+
+        public int getX() {
+            return getX(offset);
+        }
+
+        public int getY() {
+            return getY(offset);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CalCell calCell = (CalCell) o;
+
+            boolean sameDate = !(date != null ? !(date.getDayOfYear() == calCell.date.getDayOfYear())
+                    : calCell.date != null);
+            boolean sameTitle = !(title != null ? !title.equals(calCell.title) : calCell.title != null);
+
+            return (date != null && sameDate) || ((!TextUtils.isEmpty(title)) && sameTitle);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = date != null ? date.hashCode() : 0;
+            result = 31 * result + (title != null ? title.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "CalCell{" +
+                    "date=" + date +
+                    ", index=" + index +
+                    ", title='" + title + '\'' +
+                    ", disabled=" + disabled +
+                    '}';
+        }
     }
 
-    private CalCell todayCell;
-    private CalCell selectedCell;
-    private CalCell prevSelectedCell;
+    private class HeaderCell extends CalCell {
 
-    private void onSingleClick(final TouchInfo ti) {
-        for (int i = 0; i < dateCells.size(); i++) {
-            final CalCell cell = dateCells.get(i);
-            final float d = ti.distanceTo(cell.x, cell.y);
+        public HeaderCell(int index, String title) {
+            super(index, title);
+        }
 
-            if (d < cellRadius) {
-                prevSelectedCell = selectedCell;
-                selectedCell = cell;
+        @Override
+        protected int getX(int offset) {
+            return (int) (calMargin + ((float) index + 0.5f) * headerCellWidth);
+        }
 
-                Log.d(TAG, "on clicked, redraw");
-                postInvalidate();
-                break;
+        @Override
+        protected int getY(int offset) {
+            return (int) (3 * headerCellHeight / 2f);
+        }
+    }
+
+    private class DateCell extends CalCell {
+
+        public DateCell(int index, DateTime date) {
+            super(index, date);
+        }
+
+        @Override
+        protected int getX(int offset) {
+            final float x = calMargin + ((float) (index % 7) + 0.5f) * dateCellWidth;
+
+            return (int) x;
+        }
+
+        @Override
+        protected int getY(int offset) {
+            final float y = ((rowSpace + dateCellHeight) * (int) ((index - offset) / 7))
+                    + dateToHeaderSpace + headerCellHeight
+                    + 3 * dateCellHeight / 2f;
+
+            Log.d(TAG, String.format("getY, index: %d， offset: %d, actual index: %d, y: %d",
+                    index,
+                    offset,
+                    index - offset,
+                    (int) y));
+
+            return (int) y;
+        }
+
+        public boolean inSameRow(final DateCell cell) {
+            if (cell == null) {
+                return false;
             }
+
+
+            int myOffset = date.getDayOfWeek() % 7;
+            int othersOffset = cell.date.getDayOfWeek() & 7;
+
+            return (date.minusDays(myOffset).getDayOfYear() == cell.date.minusDays(othersOffset).getDayOfYear());
         }
     }
 }

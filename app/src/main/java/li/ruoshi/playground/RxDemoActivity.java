@@ -1,34 +1,29 @@
 package li.ruoshi.playground;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import li.ruoshi.playground.models.RxUploadDemo;
-import li.ruoshi.playground.view.AnimatedButton;
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.subjects.PublishSubject;
 
 
 public class RxDemoActivity extends Activity {
     private static final String TAG = RxDemoActivity.class.getSimpleName();
 
     final RxUploadDemo rxUploadDemo = new RxUploadDemo();
-    private int count = 0;
-
     final SparseArray<Subscription> subscriptionArray = new SparseArray<>();
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +31,30 @@ public class RxDemoActivity extends Activity {
         setContentView(R.layout.activity_rx_demo);
         Button button = (Button) findViewById(R.id.test_button);
 
-
+        Observable<Long> o = rx
+                .Observable
+                .timer(1, TimeUnit.SECONDS)
+                .doOnUnsubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.d(TAG, "doOnUnsubscribe from timer");
+                    }
+                });
+        final Subscription subscription = o.observeOn(AndroidSchedulers.mainThread()).subscribe(
+                new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        Log.d(TAG, "on timer: " + aLong);
+                        throw new NullPointerException();
+                    }
+                }
+        );
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (subscription.isUnsubscribed()) {
+                    subscription.unsubscribe();
+                }
                 final int key = count++;
                 Log.d(TAG, "onClick, count: " + key);
 
@@ -70,6 +85,8 @@ public class RxDemoActivity extends Activity {
                                 });
 
                 subscriptionArray.put(key, s);
+
+
             }
         });
 

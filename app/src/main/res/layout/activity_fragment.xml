@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/fragment_back">
+
+    <ImageView
+        android:id="@+id/show_floating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/done_solid"
+        />
+
+    <Button
+        android:id="@+id/hide_floating"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@id/show_floating"
+        android:layout_below="@id/show_floating"
+        android:text="Hide Floating"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="Hello world.................................."/>
+
+    <li.ruoshi.playground.view.FixedRatioLayout
+        android:id="@+id/floating_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        app:heightRatio="9"
+        app:widthRatio="16"/>
+</RelativeLayout>

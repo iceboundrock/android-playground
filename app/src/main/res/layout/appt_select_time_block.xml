@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout style="@style/ApptSelectButtonStyle"
+                xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckedTextView
+        android:id="@+id/duration_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:lineSpacingMultiplier="0.7"
+        android:textColor="@color/appt_dark_text"
+        android:textSize="16sp"
+        />
+
+    <View
+        android:id="@+id/teacher_available_dot"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/teacher_available_dot"
+        />
+
+</RelativeLayout>
