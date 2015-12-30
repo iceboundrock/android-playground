@@ -3,4 +3,13 @@
     <style name="TutorBasicTheme" parent="android:Theme.Holo.Light.NoActionBar">
         <!--<item name="android:background">@color/basic_theme_back_color</item>-->
     </style>
+    
+    <style name="ApptSelectButtonStyle">
+        <item name="android:layout_width">86dp</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_marginTop">17dp</item>
+        <item name="android:background">@drawable/appt_hours_selected_btn_bg</item>
+        <item name="android:layout_marginRight">2dp</item>
+    </style>
+
 </resources>

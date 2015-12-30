@@ -32,4 +32,8 @@
             <enum name="FILL" value="1" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="FixedRatioLayout">
+        <attr name="widthRatio" format="integer" />
+        <attr name="heightRatio" format="integer" />
+    </declare-styleable>
 </resources>

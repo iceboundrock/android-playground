@@ -77,4 +77,10 @@
 
     <color name="cal_bg_color">#ff8c0e</color>
     <color name="cal_header_text_color">#ffcba6</color>
+
+    <color name="appt_teachers_list_bg">#f3f3f3</color>
+    <color name="appt_teachers_list_split_line">#dddddd</color>
+    <color name="appt_dark_text">#666666</color>
+    <color name="appt_light_text">#999999</color>
+    <color name="teacher_available_dot">#ff8c0e</color>
 </resources>

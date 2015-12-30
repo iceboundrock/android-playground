@@ -7,8 +7,12 @@
         <!-- 日历距离视图边框的距离 -->
         <attr name="calMargin" format="dimension" />
 
-        <!-- 行数 -->
-        <attr name="rowCount" format="integer" />
+        <!-- 最小行数 -->
+        <attr name="minRowCount" format="integer" />
+
+        <!-- 最小行数 -->
+        <attr name="maxRowCount" format="integer" />
+
 
         <!-- 文字尺寸 -->
         <attr name="dateTextSize" format="dimension" />
@@ -43,9 +47,6 @@
 
         <!-- 之前选择单元的小圆点在Y轴和文字的距离 -->
         <attr name="prevSelectedCellOffsetY" format="dimension"/>
-
-        <!-- 距离今天的周数，用于下半部分的日历控件，当showHeader = false的适合才有效 -->
-        <attr name="weeksFromToday" format="integer" />
 
         <!-- 行间距 -->
         <attr name="rowSpace" format="dimension" />

@@ -262,5 +262,10 @@
     <string name="title_activity_wave_progress">WaveProgressActivity</string>
     <string name="title_activity_cal">CalActivity</string>
     <string name="title_activity_cal_demo">CalDemoActivity</string>
+    <string name="back_to_front">back to front</string>
+    <string name="title_activity_fragment">FragmentActivity</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
