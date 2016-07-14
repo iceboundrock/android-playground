@@ -1,70 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="li.ruoshi.playground" >
+          package="li.ruoshi.playground">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".PlaygroundApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ViewPagerDemo"
-            android:label="@string/title_activity_view_pager_demo" >
+            android:label="@string/title_activity_view_pager_demo">
         </activity>
         <activity
             android:name=".PathViewActivity"
-            android:label="@string/title_activity_path_view" >
+            android:label="@string/title_activity_path_view">
         </activity>
         <activity
             android:name=".AnimatedButtonActivity"
-            android:label="@string/title_activity_animated_button" >
+            android:label="@string/title_activity_animated_button">
         </activity>
         <activity
             android:name=".DotProgressBarActivity"
-            android:label="@string/title_activity_dot_progress_bar" >
+            android:label="@string/title_activity_dot_progress_bar">
         </activity>
         <activity
             android:name=".RxDemoActivity"
             android:label="@string/title_activity_rx_demo"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".AnkoActivity"
-            android:label="@string/title_activity_anko_demo" >
+            android:label="@string/title_activity_anko_demo">
         </activity>
         <activity
             android:name=".AnimatedFinishActivity"
             android:label="@string/title_activity_animated_finish"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".WaveProgressActivity"
-            android:label="@string/title_activity_wave_progress" >
+            android:label="@string/title_activity_wave_progress">
         </activity>
         <activity
             android:name=".DaggerDemoActivity"
-            android:label="@string/title_activity_cal" >
+            android:label="@string/title_activity_cal">
         </activity>
         <activity
             android:name=".CalDemoActivity"
-            android:label="@string/title_activity_cal_demo" >
+            android:label="@string/title_activity_cal_demo">
         </activity>
         <activity
             android:name=".FloatingFragmentActivity"
-            android:label="@string/title_activity_fragment" >
+            android:label="@string/title_activity_fragment">
+        </activity>
+        <activity android:name=".RecyclerViewDemoActivity"
+                  android:label="@string/title_recycler_view_activity">
         </activity>
     </application>
 

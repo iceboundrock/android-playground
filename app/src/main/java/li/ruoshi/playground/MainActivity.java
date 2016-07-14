@@ -18,7 +18,7 @@ import li.ruoshi.playground.models.HttpDns;
 
 public class MainActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = "MainActivity";
 
     final Handler handler = new Handler();
 

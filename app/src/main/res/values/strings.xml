@@ -265,7 +265,10 @@
     <string name="back_to_front">back to front</string>
     <string name="title_activity_fragment">FragmentActivity</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_recycler_view_activity">Recycler View Demo Activity</string>
+    <string name="add_item">Add 100 Items</string>
+    <string name="remove_odd_item">Remove Odd Items</string>
 
 </resources>

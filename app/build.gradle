@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlin_version = '1.0.+'
         joda_time_version = '2.8.1'
-        anko_version = '0.8.1'
+        anko_version = '0.9'
     }
 
     repositories {
@@ -20,13 +20,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 24
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         applicationId "li.ruoshi.playground"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }
@@ -53,16 +53,17 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.0'
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.+'
-    compile 'com.android.support:recyclerview-v7:23.+'
-    compile 'io.reactivex:rxjava:1.+'
-    compile 'io.reactivex:rxandroid:1.+'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'io.reactivex:rxjava:1.1.7'
+    compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.google.dagger:dagger:2.0.1'
     compile 'com.squareup.okhttp:okhttp:2.7.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.+'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.anko:anko-sdk15:$anko_version" // sdk19, sdk21, sdk23 are also available
-    compile "org.jetbrains.anko:anko-support-v4:$anko_version" // In case you need support-v4 bindings
+    compile "org.jetbrains.anko:anko-support-v4:$anko_version"
+    // In case you need support-v4 bindings
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version" // For appcompat-v7 bindings
     testCompile 'junit:junit:4.12'
 
@@ -75,4 +76,5 @@ dependencies {
     testCompile('org.robolectric:robolectric:3.+') {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }}
+    }
+}
